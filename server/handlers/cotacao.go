@@ -15,6 +15,7 @@ func CotacaoHandler(w http.ResponseWriter, r *http.Request) {
 	dollar, err := getdollarexchange.GetDollarExchange()
 	if err != nil {
 		log.Printf("Error getting dollar exchange: %s\n", err.Error())
+		return
 	}
 
 	database, err := database.GetDatabase()
@@ -30,6 +31,7 @@ func CotacaoHandler(w http.ResponseWriter, r *http.Request) {
 	tx := database.WithContext(databaseContext).Create(dollar.USDBRL)
 	if tx.Error != nil {
 		log.Printf("Error creating dollar exchange: %s\n", tx.Error.Error())
+		return
 	}
 
 	json.NewEncoder(w).Encode(dollar.USDBRL)

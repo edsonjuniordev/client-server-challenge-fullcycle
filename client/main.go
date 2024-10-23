@@ -24,34 +24,40 @@ func main() {
 
 	request, err := http.NewRequestWithContext(ctx, "GET", serverUrl, nil)
 	if err != nil {
-		log.Panicf("Error creating request: %s", err.Error())
+		log.Printf("Error creating request: %s", err.Error())
+		return
 	}
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		log.Panicf("Error making request with timeout: %s", err.Error())
+		log.Printf("Error making request with timeout: %s", err.Error())
+		return
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
-		log.Panicf("Error reading response body: %s", err.Error())
+		log.Printf("Error reading response body: %s", err.Error())
+		return
 	}
 
 	var dollar Dollar
 
 	err = json.Unmarshal(body, &dollar)
 	if err != nil {
-		log.Panicf("Error decoding response: %s", err.Error())
+		log.Printf("Error decoding response: %s", err.Error())
+		return
 	}
 
 	file, err := os.Create("client/cotacao.txt")
 	if err != nil {
-		log.Panicf("Error creating file: %s", err.Error())
+		log.Printf("Error creating file: %s", err.Error())
+		return
 	}
 
 	_, err = file.WriteString(fmt.Sprintf("Dólar: %s", dollar.Bid))
 	if err != nil {
-		log.Panicf("Error writing file: %s", err.Error())
+		log.Printf("Error writing file: %s", err.Error())
+		return
 	}
 }
